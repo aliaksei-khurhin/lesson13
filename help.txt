@@ -1,0 +1,58 @@
+yum localinstall -y http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-centos94-9.4-1.noarch.rpm
+yum install -y postgresql94-server postgresql94-contrib
+service postgresql-9.4 initdb
+service postgresql-9.4 start
+chkconfig postgresql-9.4 on
+sudo -u postgres sh
+
+createuser -DRSP puppetdb #password for user should be passed
+createdb -E UTF8 -O puppetdb puppetdb
+psql puppetdb -c 'create extension pg_trgm'
+exit
+
+vim /var/lib/pgsql/9.4/data/pg_hba.conf
+# changing authentication method to MD5
+service postgresql-9.4 restart
+
+puppet resource package puppetdb-termini ensure=latest
+puppet resource package puppetdb ensure=latest
+
+vim /etc/puppetlabs/puppetdb/conf.d/database.ini
+# ensure network path to database, user and password are configured correctly
+service puppetdb start
+
+puppet resource package puppetdb-termini ensure=latest
+
+cd $(puppet config print confdir) #current settings for puppet
+
+vim puppet.conf
+
+#adding following lines to master section:
+  storeconfigs = true
+  storeconfigs_backend = puppetdb
+  reports = store,puppetdb
+  
+vim puppetdb.conf
+# put here the next:
+  [main]
+  server_urls = https://< node with puppetdb fqdn >:8081
+
+vim $(puppet master --configprint route_file)
+#contents:
+---
+master:
+  facts:
+    terminus: puppetdb
+    cache: yaml
+
+chown -R puppet:puppet $(puppet config print confdir)
+
+## puppet explorer
+puppet module install spotify-puppetexplorer
+puppet module install puppetlabs-apache
+
+vim /etc/puppetlabs/code/environments/production/manifests/site.pp
+#contetnst added:
+node '<puppet master node>' { 
+   class { 'puppetexplorer': } 
+}

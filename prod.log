@@ -1,0 +1,13 @@
+[0;32mInfo: Using configured environment 'prod'[0m
+[0;32mInfo: Retrieving pluginfacts[0m
+[0;32mInfo: Retrieving plugin[0m
+[0;32mInfo: Loading facts[0m
+[0;32mInfo: Caching catalog for puppet-node[0m
+[0;32mInfo: Applying configuration version '1474577306'[0m
+[mNotice: /Stage[main]/Main/Node[puppet-node]/Mysql_database[prod_mdb]/ensure: created[0m
+[mNotice: /Stage[main]/Main/Node[puppet-node]/Mysql_user[prod_user@localhost]/ensure: created[0m
+[mNotice: /Stage[main]/Main/Node[puppet-node]/Mysql_grant[prod_user@localhost/prod_mdb.*]/ensure: created[0m
+[mNotice: /Stage[main]/Main/Node[puppet-node]/Package[nginx]/ensure: created[0m
+[mNotice: /Stage[main]/Main/Node[puppet-node]/Service[nginx]/ensure: ensure changed 'stopped' to 'running'[0m
+[0;32mInfo: /Stage[main]/Main/Node[puppet-node]/Service[nginx]: Unscheduling refresh on Service[nginx][0m
+[mNotice: Applied catalog in 74.61 seconds[0m
